@@ -193,30 +193,57 @@ function App() {
       .catch(() => setBackendStatus('error'));
   }, []);
 
-  // ★ 起動時に「前回保存していたCSVデータ」だけを読み込む
+    // ★ 起動時：まず localStorage、なければバックエンドの共有データを読む
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+    const init = async () => {
+      // 1) まず localStorage をチェック
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
 
-      // 1. まず localStorage に前回データがあればそれを使う
-      if (raw) {
-        const saved = JSON.parse(raw);
-        if (saved.candles && saved.candles.length > 0) {
-          setCandles(saved.candles);
-          setUploadInfo(saved.uploadInfo || null);
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved.candles && saved.candles.length > 0) {
+            setCandles(saved.candles);
+            setUploadInfo(saved.uploadInfo || null);
+            setCurrentIndex(0);
+            setIsPlaying(false);
+            setPosition(null);
+            setTrades([]);
+            return; // ← localStorage があればここで終了
+          }
+        }
+      } catch (e) {
+        console.error('前回データの読み込みに失敗しました', e);
+      }
+
+      // 2) localStorage に何もなければ、共有データをバックエンドから取得
+      try {
+        const res = await fetch(`${API_BASE}/api/default-candles`);
+        const data = await res.json();
+
+        if (
+          data.success &&
+          Array.isArray(data.candles) &&
+          data.candles.length > 0
+        ) {
+          setCandles(data.candles);
+          setUploadInfo(data.uploadInfo || null);
           setCurrentIndex(0);
           setIsPlaying(false);
           setPosition(null);
           setTrades([]);
-          return;
+          console.log('共有ローソク足を読み込みました:', data.candles.length);
+        } else {
+          console.log('共有データがまだありません');
         }
+      } catch (e) {
+        console.error('共有データの取得に失敗しました', e);
       }
-    } catch (e) {
-      console.error('前回データの読み込みに失敗しました', e);
-    }
+    };
 
-    // 2. 何も保存されていなければ、何もしない（＝最初はチャートが出ない）
+    init();
   }, []);
+
 
   // ★ 共有データ（バックエンド）からの初期読み込み
   useEffect(() => {
@@ -723,19 +750,21 @@ function App() {
             <button onClick={handleClosePosition}>⚪ Close（決済）</button>
           </div>
 
-          {/* ★ 利確 / 損切り設定（pips） */}
-          <div
-            style={{
-              marginTop: '14px',
-              marginBottom: '16px',
-              fontSize: '13px',
-              background: '#f9f9f9',
-              padding: '10px 14px',
-              borderRadius: '6px',
-              border: '1px solid '#ddd',
-              width: 'fit-content',
-            }}
-          >
+         {/* ★ 利確 / 損切り設定（pips） */}
+<div
+  style={{
+    marginTop: '14px',
+    marginBottom: '16px',
+    fontSize: '13px',
+    background: '#f9f9f9',
+    padding: '10px 14px',
+    borderRadius: '6px',
+    border: '1px solid #ddd',
+    width: 'fit-content',
+  }}
+>
+
+
             <div style={{ marginBottom: '6px', fontWeight: 600 }}>自動決済（pips）</div>
 
             <label style={{ marginRight: '16px' }}>
@@ -823,7 +852,7 @@ function App() {
             <div
               style={{
                 padding: '10px',
-                border: '1px solid '#ddd',
+                border: '1px solid #ddd',
                 borderRadius: '4px',
                 fontSize: '14px',
                 background: '#fafafa',
@@ -859,7 +888,7 @@ function App() {
           <div
             style={{
               padding: '10px',
-              border: '1px solid '#ddd',
+              border: '1px solid #ddd',
               borderRadius: '4px',
               marginBottom: '10px',
               background: '#fdfdfd',
@@ -888,7 +917,7 @@ function App() {
           <div
             style={{
               padding: '10px',
-              border: '1px solid '#ddd',
+              border: '1px solid #ddd',
               borderRadius: '4px',
               marginBottom: '16px',
               background: '#fafafa',
@@ -910,7 +939,7 @@ function App() {
                 style={{
                   overflowX: 'auto',
                   maxHeight: '260px',
-                  border: '1px solid '#ddd',
+                  border: '1px solid #ddd',
                 }}
               >
                 <table
@@ -924,7 +953,7 @@ function App() {
                     <tr>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -933,7 +962,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -942,7 +971,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -951,7 +980,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -960,7 +989,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -969,7 +998,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -978,7 +1007,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -1000,7 +1029,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1008,7 +1037,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1016,7 +1045,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1024,7 +1053,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1032,7 +1061,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1040,7 +1069,7 @@ function App() {
                         </td>
                         <td
                           style={{
-                            border: '1px solid '#eee',
+                            border: '1px solid #eee',
                             padding: '3px 6px',
                           }}
                         >
@@ -1062,7 +1091,7 @@ function App() {
                 width="100%"
                 viewBox={`0 0 ${equityChart.width} ${equityChart.height}`}
                 style={{
-                  border: '1px solid '#eee',
+                  border: '1px solid #eee',
                   background: '#ffffff',
                 }}
               >
