@@ -3,7 +3,10 @@ import { useEffect, useState, useRef } from 'react';
 const API_BASE = "https://fx-trainer-backend.onrender.com";
 const STORAGE_KEY = 'fx_trainer_saved_data_v1';
 
-const isAdmin = true;
+// URL に ?admin=1 が付いているときだけ管理者モード
+const isAdmin =
+  typeof window !== 'undefined' &&
+  window.location.search.includes('admin=1');
 
 /* ================================
    ローソク足チャートコンポーネント
