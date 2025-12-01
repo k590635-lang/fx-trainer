@@ -750,7 +750,7 @@ function App() {
             <button onClick={handleClosePosition}>⚪ Close（決済）</button>
           </div>
 
-         {/* ★ 利確 / 損切り設定（pips） */}
+        {/* ★ 利確 / 損切り設定（pips） */}
 <div
   style={{
     marginTop: '14px',
