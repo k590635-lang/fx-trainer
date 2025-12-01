@@ -537,13 +537,20 @@ function App() {
   })();
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
-        maxWidth: '960px',
-        margin: '0 auto',
-      }}
+  <div
+    style={{
+      padding: '20px',
+      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
+      maxWidth: '960px',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      width: '100%',
+      display: 'block',
+      boxSizing: 'border-box',
+    }}
+  >
+
+
     >
             <h1>FX トレーニングツール（MVP準備中）</h1>
       <p>バックエンドの状態: {backendStatus}</p>
