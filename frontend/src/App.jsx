@@ -551,8 +551,18 @@ function App() {
   >
 
 
-    >
-            <h1>FX トレーニングツール（MVP準備中）</h1>
+    
+            <h1
+  style={{
+    textAlign: 'center',
+    fontSize: '36px',
+    fontWeight: '700',
+    marginBottom: '24px',
+  }}
+>
+  FX トレーニングツール
+</h1>
+
       <p>バックエンドの状態: {backendStatus}</p>
 +     <p>現在読み込んでいるローソク足本数: {candles.length} 本</p>
 
