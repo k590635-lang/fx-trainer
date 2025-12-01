@@ -752,17 +752,18 @@ function App() {
 
           {/* ★ 利確 / 損切り設定（pips） */}
           <div
-            style={{
-              marginTop: '14px',
-              marginBottom: '16px',
-              fontSize: '13px',
-              background: '#f9f9f9',
-              padding: '10px 14px',
-              borderRadius: '6px',
-              border: '1px solid '#ddd',
-              width: 'fit-content',
-            }}
-          >
+  style={{
+    marginTop: '14px',
+    marginBottom: '16px',
+    fontSize: '13px',
+    background: '#f9f9f9',
+    padding: '10px 14px',
+    borderRadius: '6px',
+    border: '1px solid #ddd',
+    width: 'fit-content',
+  }}
+>
+
             <div style={{ marginBottom: '6px', fontWeight: 600 }}>自動決済（pips）</div>
 
             <label style={{ marginRight: '16px' }}>
