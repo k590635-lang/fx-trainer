@@ -750,8 +750,8 @@ function App() {
             <button onClick={handleClosePosition}>⚪ Close（決済）</button>
           </div>
 
-          {/* ★ 利確 / 損切り設定（pips） */}
-          <div
+         {/* ★ 利確 / 損切り設定（pips） */}
+<div
   style={{
     marginTop: '14px',
     marginBottom: '16px',
@@ -763,6 +763,7 @@ function App() {
     width: 'fit-content',
   }}
 >
+
 
             <div style={{ marginBottom: '6px', fontWeight: 600 }}>自動決済（pips）</div>
 
@@ -851,7 +852,7 @@ function App() {
             <div
               style={{
                 padding: '10px',
-                border: '1px solid '#ddd',
+                border: '1px solid #ddd',
                 borderRadius: '4px',
                 fontSize: '14px',
                 background: '#fafafa',
@@ -887,7 +888,7 @@ function App() {
           <div
             style={{
               padding: '10px',
-              border: '1px solid '#ddd',
+              border: '1px solid #ddd',
               borderRadius: '4px',
               marginBottom: '10px',
               background: '#fdfdfd',
@@ -916,7 +917,7 @@ function App() {
           <div
             style={{
               padding: '10px',
-              border: '1px solid '#ddd',
+              border: '1px solid #ddd',
               borderRadius: '4px',
               marginBottom: '16px',
               background: '#fafafa',
@@ -938,7 +939,7 @@ function App() {
                 style={{
                   overflowX: 'auto',
                   maxHeight: '260px',
-                  border: '1px solid '#ddd',
+                  border: '1px solid #ddd',
                 }}
               >
                 <table
@@ -952,7 +953,7 @@ function App() {
                     <tr>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -961,7 +962,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -970,7 +971,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -979,7 +980,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -988,7 +989,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -997,7 +998,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
@@ -1006,7 +1007,7 @@ function App() {
                       </th>
                       <th
                         style={{
-                          border: '1px solid '#ddd',
+                          border: '1px solid #ddd',
                           padding: '4px 6px',
                           background: '#f7f7f7',
                         }}
