@@ -7,24 +7,24 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 4001;
 
-// ========================
-// ▼ 全ユーザー共有のローソク足データ（メモリ上）
-// ========================
+/* ========================
+   ▼ 全ユーザー共有のローソク足データ（メモリ上）
+   ======================== */
 let sharedCandles = [];
 let sharedUploadInfo = null;
 
-// ========================
-// アップロード設定
-// ========================
+/* ========================
+   アップロード設定
+   ======================== */
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 const upload = multer({ dest: UPLOAD_DIR });
 
-// ========================
-// CORS
-// ========================
+/* ========================
+   CORS
+   ======================== */
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -35,16 +35,16 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 
-// ========================
-// ヘルスチェック
-// ========================
+/* ========================
+   ヘルスチェック
+   ======================== */
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ========================
-// CSV アップロード（管理者のみ利用）
-// ========================
+/* ========================
+   CSV アップロード（管理者のみ利用）
+   ======================== */
 app.post('/api/upload-csv', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'ファイルがありません' });
@@ -64,6 +64,7 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
       return res.json({ success: false, message: 'CSVが空です' });
     }
 
+    // 区切り推定
     let delimiter = ',';
     if (lines[0].includes(';')) delimiter = ';';
     if (lines[0].includes('\t')) delimiter = '\t';
@@ -72,6 +73,7 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
     const totalRows = Math.max(lines.length - 1, 0);
     let dataLines = lines.slice(1);
 
+    // 最大本数制限
     const MAX_CANDLES = 20000;
     if (dataLines.length > MAX_CANDLES) {
       dataLines = dataLines.slice(-MAX_CANDLES);
@@ -103,7 +105,8 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
 
         if (dateStr) {
           const [y, m, d] = dateStr.split('.').map(Number);
-          let h = 0, min = 0;
+          let h = 0;
+          let min = 0;
           if (timeStr) {
             const parts = timeStr.split(':');
             h = Number(parts[0]) || 0;
@@ -125,7 +128,9 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
           Number.isNaN(high) ||
           Number.isNaN(low) ||
           Number.isNaN(close)
-        ) return null;
+        ) {
+          return null;
+        }
 
         return { time: label, timestamp, open, high, low, close, volume };
       })
@@ -137,6 +142,7 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
     sharedCandles = uploadedCandles;
     sharedUploadInfo = { header, totalRows, preview, delimiter };
 
+    // アップロード結果を返す（フロント管理画面向け）
     res.json({
       success: true,
       header,
@@ -148,9 +154,9 @@ app.post('/api/upload-csv', upload.single('file'), (req, res) => {
   });
 });
 
-// ========================
-// ▼ 共有データ取得（全ユーザー）
-// ========================
+/* ========================
+   ▼ 共有データ取得（全ユーザー共通）
+   ======================== */
 app.get('/api/default-candles', (req, res) => {
   if (!sharedCandles || sharedCandles.length === 0) {
     return res.json({
@@ -166,9 +172,17 @@ app.get('/api/default-candles', (req, res) => {
   });
 });
 
-// ========================
-// サーバー起動
-// ========================
+// おまけ：/api/shared-candles でも同じものを返したい場合
+app.get('/api/shared-candles', (req, res) => {
+  res.json({
+    success: true,
+    candles: sharedCandles,
+  });
+});
+
+/* ========================
+   サーバー起動
+   ======================== */
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });
