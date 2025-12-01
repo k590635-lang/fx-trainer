@@ -3,9 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 const API_BASE = "https://fx-trainer-backend.onrender.com";
 const STORAGE_KEY = 'fx_trainer_saved_data_v1';
 
-const isAdmin =
-  typeof window !== 'undefined' &&
-  window.location.search.includes('admin=1');
+const isAdmin = true;
 
 /* ================================
    ローソク足チャートコンポーネント
@@ -262,70 +260,69 @@ function App() {
   }, [isPlaying, candles.length, playSpeed]);
 
   // CSVアップロード
-const handleUpload = async (e) => {
-  e.preventDefault();
+  const handleUpload = async (e) => {
+    e.preventDefault();
 
-  // form の中の <input name="csvFile" ...> を取得
-  const fileInput = e.target.elements.csvFile;
-  if (!fileInput || !fileInput.files || !fileInput.files[0]) {
-    alert('CSVファイルを選択してください');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('file', fileInput.files[0]);
-
-  try {
-    console.log('start upload to:', `${API_BASE}/api/upload-csv`);
-
-    const res = await fetch(`${API_BASE}/api/upload-csv`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      console.error('HTTP error:', res.status, res.statusText);
-      alert('サーバーエラーが発生しました');
+    // form の中の <input name="csvFile" ...> を取得
+    const fileInput = e.target.elements.csvFile;
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+      alert('CSVファイルを選択してください');
       return;
     }
 
-    const data = await res.json();
-    console.log('upload result:', data);
-    console.log('candles length from backend:', data.candles?.length);
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
 
-    if (!data.success) {
-      alert('アップロードに失敗しました: ' + (data.message || ''));
-      return;
+    try {
+      console.log('start upload to:', `${API_BASE}/api/upload-csv`);
+
+      const res = await fetch(`${API_BASE}/api/upload-csv`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        console.error('HTTP error:', res.status, res.statusText);
+        alert('サーバーエラーが発生しました');
+        return;
+      }
+
+      const data = await res.json();
+      console.log('upload result:', data);
+      console.log('candles length from backend:', data.candles?.length);
+
+      if (!data.success) {
+        alert('アップロードに失敗しました: ' + (data.message || ''));
+        return;
+      }
+
+      const uploadedCandles = data.candles || [];
+      if (!Array.isArray(uploadedCandles) || uploadedCandles.length === 0) {
+        alert('有効なローソク足データがありません');
+        return;
+      }
+
+      const uploadedInfo = {
+        header: data.header,
+        totalRows: data.totalRows,
+        preview: data.preview,
+        delimiter: data.delimiter,
+      };
+
+      // ここでチャート用の状態を更新
+      setCandles(uploadedCandles);
+      setUploadInfo(uploadedInfo);
+      setCurrentIndex(0);
+      setIsPlaying(false);
+      setPosition(null);
+      setTrades([]);
+
+      // 画面上の「ローソク足本数」が 0 → ○○本 に変われば成功
+    } catch (err) {
+      console.error('アップロード時にエラーが発生しました', err);
+      alert('アップロード中にエラーが発生しました');
     }
-
-    const uploadedCandles = data.candles || [];
-    if (!Array.isArray(uploadedCandles) || uploadedCandles.length === 0) {
-      alert('有効なローソク足データがありません');
-      return;
-    }
-
-    const uploadedInfo = {
-      header: data.header,
-      totalRows: data.totalRows,
-      preview: data.preview,
-      delimiter: data.delimiter,
-    };
-
-    // ここでチャート用の状態を更新
-    setCandles(uploadedCandles);
-    setUploadInfo(uploadedInfo);
-    setCurrentIndex(0);
-    setIsPlaying(false);
-    setPosition(null);
-    setTrades([]);
-
-    // 画面上の「ローソク足本数」が 0 → ○○本 に変われば成功
-  } catch (err) {
-    console.error('アップロード時にエラーが発生しました', err);
-    alert('アップロード中にエラーが発生しました');
-  }
-};
-
+  };
 
   const currentCandle = candles[currentIndex] || null;
   const progressPct =
@@ -351,6 +348,7 @@ const handleUpload = async (e) => {
     setIsPlaying(false);
     setCurrentIndex(0);
   };
+
 
   /* ================================
      トレード関連
