@@ -41,11 +41,9 @@
   color: #888;
 }
 
-/* ▼ スマホでタイトルの改行を最適化 */
 @media (max-width: 480px) {
   h1 {
-    font-size: 2.2rem;     /* 小さめにして改行されにくくする */
-    line-height: 1.25;
-    word-break: keep-all;  /* 単語途中で改行しない */
+    font-size: 22px !important;
   }
 }
+

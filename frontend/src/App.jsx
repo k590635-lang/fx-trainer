@@ -602,15 +602,18 @@ function App() {
       }}
     >
       <h1
-        style={{
-          textAlign: 'center',
-          fontSize: '36px',
-          fontWeight: '700',
-          marginBottom: '24px',
-        }}
-      >
-        FX トレーニングツール
-      </h1>
+  style={{
+    textAlign: 'center',
+    fontSize: '32px',
+    fontWeight: '700',
+    marginBottom: '24px',
+    whiteSpace: 'nowrap',
+  }}
+>
+   FX 売買トレーニングツール
+</h1>
+
+
 
       {isAdmin && (
   <div className="admin-info">
