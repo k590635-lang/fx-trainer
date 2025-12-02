@@ -610,7 +610,7 @@ function App() {
     whiteSpace: 'nowrap',
   }}
 >
-   FX 売買トレーニングツール
+   秒で溶けるアカデミー
 </h1>
 
 
